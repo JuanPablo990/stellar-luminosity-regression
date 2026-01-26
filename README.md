@@ -73,39 +73,43 @@ jupyter nbconvert --to notebook --execute 01_part1_linreg_1feature.ipynb --Execu
 jupyter nbconvert --to notebook --execute 02_part2_polyreg.ipynb --ExecutePreprocessor.timeout=600
 ```
 
-## How to run on AWS
-Two common options are EC2 (virtual machine) or SageMaker (managed notebooks). Below are basic steps and placeholders for screenshots.
+## How to run on AWS (SageMaker)
+This project uses AWS SageMaker for development and testing. The workflow is: start the notebook instance (or Studio session with the chosen container), upload the notebooks, run them, then stop the instance to avoid incurring costs.
 
-### Option A — EC2 (Ubuntu instance)
-1. Launch an EC2 instance (e.g., `t2.medium` or larger depending on needs).
-2. Open ports: `22` (SSH) and `8888` (if exposing Jupyter) — apply proper security practices.
-3. Connect via SSH and prepare the environment:
-
-```bash
-ssh -i "my-key.pem" ubuntu@<ec2-ip>
-sudo apt update && sudo apt install -y python3-venv python3-pip
-python3 -m venv venv
-source venv/bin/activate
-pip install --upgrade pip
-pip install jupyterlab numpy pandas scikit-learn matplotlib seaborn
-```
-
-4. Transfer the repository (git clone or `scp` from your local machine).
-5. Launch Jupyter Lab (example, with token and listening on all interfaces — prefer SSH tunnel for security):
+Steps:
+1. Create or start a SageMaker Notebook Instance (or open SageMaker Studio).
+2. Choose a suitable image/container or use the default Python image. If you need a custom container, configure it in SageMaker Studio or via an image lifecycle configuration.
+3. Upload the notebooks:
 
 ```bash
-jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root
+# from the instance terminal or local machine (inside environment)
+git clone <repo-url>
+cd stellar-luminosity-regression
 ```
 
-6. Open in your browser at `http://<ec2-ip>:8888` (or use an SSH tunnel: `ssh -i my-key.pem -L 8888:localhost:8888 ubuntu@<ec2-ip>`).
+Or use the SageMaker file upload UI to upload `01_part1_linreg_1feature.ipynb` and `02_part2_polyreg.ipynb`.
 
-### Option B — AWS SageMaker (managed notebooks)
-1. Create a new Notebook Instance or use SageMaker Studio.
-2. Upload the repository or connect via Git.
-3. Select a Python kernel and open the notebooks.
-4. Run cells interactively. SageMaker manages infrastructure and dependencies (optionally use Conda environments).
+4. Open and run the notebooks interactively in the SageMaker UI.
 
-Note: This project is primarily developed and tested on AWS SageMaker; the notebooks assume that environment (Notebook Instance / Studio). If you want, I can add a `sagemaker-setup.md` file with step-by-step instructions, quick links, and a minimal IAM template.
+5. When finished, stop the Notebook Instance (important to avoid charges):
+
+ - From the AWS Console: go to SageMaker > Notebook instances, select your instance and click `Stop`.
+ - Or using AWS CLI:
+
+```bash
+aws sagemaker stop-notebook-instance --notebook-instance-name <your-notebook-name>
+```
+
+6. To restart later, use `Start` in the Console or:
+
+```bash
+aws sagemaker start-notebook-instance --notebook-instance-name <your-notebook-name>
+```
+
+Notes:
+- Uploading notebooks, running analyses, and then stopping the instance is the recommended flow to minimize costs. Do not `Terminate` the instance unless you want to delete it permanently.
+- If you use SageMaker Studio, shut down user apps/sessions when done; Studio resources may be billed differently — stop kernels and user apps from the Studio UI.
+- If you want, I can add a `sagemaker-setup.md` file with exact console clicks, IAM minimal policy template, and a lifecycle script to pull a custom Docker image.
 
 ### Screenshots / Placeholder for AWS images
 Place your screenshots in `docs/images/` and replace the filenames below.
