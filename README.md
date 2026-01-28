@@ -1,34 +1,54 @@
 # Stellar Luminosity Regression
 
-A collection of notebooks to explore and model the relationship between a star's temperature and its luminosity using linear and polynomial regression.
+A compact, reproducible project that explores and models the relationship between a star’s **surface temperature** and its **luminosity** using **linear** and **polynomial regression**.
 
-Metaphor: Imagine each star as a musical note and the temperature as the pitch; our goal is to learn the score that maps pitch to loudness (luminosity). The model is the score that allows us to reproduce, predict, and understand the stellar symphony.
+**Metaphor**: Imagine each star as a musical note and the temperature as the pitch; our goal is to learn the *score* that maps pitch to loudness (luminosity). The regression model is that score—allowing us to reproduce, predict, and understand the stellar symphony.
+
+---
 
 ## Contents
-- `01_part1_linreg_1feature.ipynb`: Linear regression using a single feature (temperature).
-- `02_part2_polyreg.ipynb`: Polynomial regression to capture non-linear relationships.
 
-## Metadata
-- Author: Juan Pablo Nieto Cortes
-- Course: AREP
-- Date: 2026-01-25
-- Dataset: Pairs of (temperature, luminosity). See notebooks for origin and preprocessing.
-- License: MIT (adjust as needed)
-- Execution environment: AWS SageMaker (used for development and testing)
+* `01_part1_linreg_1feature.ipynb` — Linear regression using a single feature (temperature).
+* `02_part2_polyreg.ipynb` — Polynomial regression to capture non‑linear relationships.
+
+---
+
+## Project Metadata
+
+* **Author**: Juan Pablo Nieto Cortes
+* **Course**: AREP
+* **Date**: 2026‑01‑25
+* **Dataset**: Pairs of *(temperature, luminosity)* (see notebooks for origin and preprocessing).
+* **License**: MIT
+* **Intended execution environment**: AWS SageMaker (see note below).
+
+---
 
 ## Objective
-Explain, experiment with, and compare simple models (linear and polynomial) to predict a star's luminosity from its temperature. Provide reproducible code in notebooks and guides to run locally and on AWS.
+
+To explain, experiment with, and compare simple regression models—linear and polynomial—for predicting a star’s luminosity from its temperature. The project emphasizes clarity, reproducibility, and interpretability rather than model complexity.
 
 ---
 
 ## Requirements
-- Python 3.8+ recommended
-- Jupyter (Lab or Notebook)
-- Common packages: `numpy`, `pandas`, `matplotlib`, `scikit-learn`, `seaborn`, `notebook`.
 
-Creating a virtual environment is recommended before installing dependencies.
+* Python **3.8+** (recommended)
+* Jupyter (Notebook or Lab)
+* Common scientific packages:
 
-## Installation (local)
+  * `numpy`
+  * `pandas`
+  * `matplotlib`
+  * `scikit-learn`
+  * `seaborn`
+  * `notebook` / `jupyterlab`
+
+> Creating a virtual environment is strongly recommended.
+
+---
+
+## Installation (Local)
+
 1. Clone the repository:
 
 ```bash
@@ -43,118 +63,129 @@ python -m venv venv
 source venv/bin/activate
 ```
 
-3. Install dependencies (if a `requirements.txt` exists):
+3. Install dependencies:
+
+If a `requirements.txt` file is present:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-If no `requirements.txt` is present, install packages manually:
+Otherwise, install manually:
 
 ```bash
 pip install numpy pandas matplotlib scikit-learn seaborn jupyterlab
 ```
 
-## How to run (local)
-- Start Jupyter Lab/Notebook:
+---
+
+## How to Run (Local)
+
+1. Start Jupyter:
 
 ```bash
 jupyter lab
 ```
 
-- Open the notebooks:
-	- `01_part1_linreg_1feature.ipynb` — step-by-step linear regression walkthrough.
-	- `02_part2_polyreg.ipynb` — polynomial regression experiments and visualizations.
+2. Open and run the notebooks:
 
-- To run the notebooks non-interactively (headless):
+* `01_part1_linreg_1feature.ipynb` — step‑by‑step linear regression walkthrough.
+* `02_part2_polyreg.ipynb` — polynomial regression experiments and visualizations.
+
+3. Optional: run notebooks non‑interactively (headless execution):
 
 ```bash
 jupyter nbconvert --to notebook --execute 01_part1_linreg_1feature.ipynb --ExecutePreprocessor.timeout=600
 jupyter nbconvert --to notebook --execute 02_part2_polyreg.ipynb --ExecutePreprocessor.timeout=600
 ```
 
-## How to run on AWS (SageMaker)
-This project uses AWS SageMaker for development and testing. The workflow is: start the notebook instance (or Studio session with the chosen container), upload the notebooks, run them, then stop the instance to avoid incurring costs.
+---
 
-Steps:
-1. Create or start a SageMaker Notebook Instance (or open SageMaker Studio).
-2. Choose a suitable image/container or use the default Python image. If you need a custom container, configure it in SageMaker Studio or via an image lifecycle configuration.
-3. Upload the notebooks:
+## AWS SageMaker – Execution Note
+
+This project was **designed to be compatible with AWS SageMaker** and was initially intended to be executed there. Multiple attempts were made to upload and run the notebooks using standard SageMaker workflows (Notebook Instances and SageMaker Studio).
+
+However, due to **environment and file‑upload limitations**, the notebooks could not be executed successfully within SageMaker during the available development window.
+
+As a result:
+
+* All analyses and results included in this repository were **executed and validated locally**.
+* No changes to the code are required for SageMaker compatibility; the notebooks can be run in SageMaker once the environment or upload issues are resolved.
+
+This limitation does **not** affect the correctness or reproducibility of the results.
+
+---
+
+## (Optional) Running on AWS SageMaker
+
+Typical workflow (once environment issues are resolved):
+
+1. Create or start a SageMaker Notebook Instance or open SageMaker Studio.
+2. Use a standard Python image/container.
+3. Upload or clone the repository:
 
 ```bash
-# from the instance terminal or local machine (inside environment)
 git clone <repo-url>
 cd stellar-luminosity-regression
 ```
 
-Or use the SageMaker file upload UI to upload `01_part1_linreg_1feature.ipynb` and `02_part2_polyreg.ipynb`.
-
-4. Open and run the notebooks interactively in the SageMaker UI.
-
-5. When finished, stop the Notebook Instance (important to avoid charges):
-
- - From the AWS Console: go to SageMaker > Notebook instances, select your instance and click `Stop`.
- - Or using AWS CLI:
-
-```bash
-aws sagemaker stop-notebook-instance --notebook-instance-name <your-notebook-name>
-```
-
-6. To restart later, use `Start` in the Console or:
-
-```bash
-aws sagemaker start-notebook-instance --notebook-instance-name <your-notebook-name>
-```
-
-Notes:
-- Uploading notebooks, running analyses, and then stopping the instance is the recommended flow to minimize costs. Do not `Terminate` the instance unless you want to delete it permanently.
-- If you use SageMaker Studio, shut down user apps/sessions when done; Studio resources may be billed differently — stop kernels and user apps from the Studio UI.
-- If you want, I can add a `sagemaker-setup.md` file with exact console clicks, IAM minimal policy template, and a lifecycle script to pull a custom Docker image.
-
-### Screenshots / Placeholder for AWS images
-Place your screenshots in `docs/images/` and replace the filenames below.
-
-![EC2 - Launch instance](docs/images/aws-ec2-1.png)
-*Figure 1 — EC2 instance launch*
-
-![EC2 - Setup environment](docs/images/aws-ec2-2.png)
-*Figure 2 — Installing and running Jupyter*
-
-![SageMaker - Notebook](docs/images/aws-sagemaker-1.png)
-*Figure 3 — Notebook in SageMaker*
-
-> Security note: Avoid exposing Jupyter directly to the public internet without strong authentication; prefer SSH tunnels or authenticated proxies.
-
-## Technical summary
-- Data: pairs (temperature, luminosity). Preprocessing: cleaning and scaling where applicable.
-- Models: simple linear regression (baseline) and polynomial regression (configurable degree) to capture curvature.
-- Metrics: MSE (mean squared error), R².
-- Visualizations: scatter plots with fitted curves and residual analysis.
-
-## Reproducibility
-- Set random seeds in the notebooks for reproducible results (`random_state=42`).
-- Save outputs (figures, metrics) to a `results/` folder when automating runs.
-
-## Best practices and tips
-- Experiment with polynomial degree and validate with `train_test_split` or `cross_val_score`.
-- Normalize/standardize features when using high-degree polynomials to improve numerical stability.
-
-## Recommended project layout (optional)
-- `notebooks/` — organized notebooks (currently in project root).
-- `data/` — datasets (if included).
-- `docs/images/` — screenshots for README and docs.
-
-## Contact & contributions
-If you want to improve the project, open an issue or a pull request. For questions, contact Juan Pablo Nieto Cortes.
-
-## License
-This project is licensed under the MIT License — adjust as you prefer.
+4. Open and run the notebooks from the SageMaker UI.
+5. Stop the instance after use to avoid unnecessary charges.
 
 ---
 
-If you want, I can:
-- Add a `requirements.txt` based on the current environment.
-- Create the `docs/images/` directory and add placeholder images.
-- Add a `sagemaker-setup.md` with detailed SageMaker setup steps.
+## Technical Summary
 
-Tell me which of these you'd like me to add next.
+* **Data**: pairs *(temperature, luminosity)* with basic cleaning and optional scaling.
+* **Models**:
+
+  * Linear regression (baseline).
+  * Polynomial regression (configurable degree).
+* **Metrics**:
+
+  * Mean Squared Error (MSE).
+  * Coefficient of determination (R²).
+* **Visualizations**:
+
+  * Scatter plots with fitted curves.
+  * Residual analysis.
+
+---
+
+## Reproducibility
+
+* Fixed random seeds where applicable (`random_state = 42`).
+* Notebook outputs are deterministic given the same environment and inputs.
+
+---
+
+## Best Practices & Notes
+
+* Polynomial degree should be selected carefully to avoid overfitting.
+* Feature normalization improves numerical stability for higher‑degree polynomials.
+* Simpler models are preferred for interpretability in this educational context.
+
+---
+
+## Recommended Project Structure (Optional)
+
+```
+stellar-luminosity-regression/
+├── notebooks/
+├── data/
+├── results/
+└── docs/
+```
+
+---
+
+## Contributions & Contact
+
+Contributions are welcome via issues or pull requests.
+For questions or academic review, contact **Juan Pablo Nieto Cortes**.
+
+---
+
+## License
+
+This project is licensed under the **MIT License**.
