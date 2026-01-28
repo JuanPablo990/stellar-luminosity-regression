@@ -116,7 +116,7 @@ This limitation does **not** affect the correctness or reproducibility of the re
 
 ---
 
-## (Optional) Running on AWS SageMaker
+## Running on AWS SageMaker
 
 Typical workflow (once environment issues are resolved):
 
